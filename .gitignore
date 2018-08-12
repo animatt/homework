@@ -90,3 +90,6 @@ ENV/
 
 # King
 *.pdf
+*~
+*#
+active.py
