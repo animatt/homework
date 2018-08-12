@@ -8,6 +8,7 @@ import torch
 import pickle
 import sys
 
+from my_model import MyModel
 
 task = sys.argv[1]
 
@@ -28,11 +29,13 @@ N, D_in = observations.shape
 H1 = 100
 _, D_out = actions.shape
 
-model = torch.nn.Sequential(
-    torch.nn.Linear(D_in, H1),
-    torch.nn.ReLU(),
-    torch.nn.Linear(H1, D_out)
-)
+
+model = MyModel(D_in, H1, D_out)
+# model = torch.nn.Sequential(
+#     torch.nn.Linear(D_in, H1),
+#     torch.nn.ReLU(),
+#     torch.nn.Linear(H1, D_out)
+# )
 
 learning_rate = 1e-2
 
