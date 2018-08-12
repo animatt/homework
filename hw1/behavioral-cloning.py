@@ -30,12 +30,12 @@ H1 = 100
 _, D_out = actions.shape
 
 
+with open(f'./clones/{task}.params.pkl', 'wb') as f:
+    pickle.dump({'D_in': D_in, 'D_out': D_out, 'H': H1}, f)
+
+
 model = MyModel(D_in, H1, D_out)
-# model = torch.nn.Sequential(
-#     torch.nn.Linear(D_in, H1),
-#     torch.nn.ReLU(),
-#     torch.nn.Linear(H1, D_out)
-# )
+
 
 learning_rate = 1e-2
 
