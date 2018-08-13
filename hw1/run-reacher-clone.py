@@ -31,3 +31,14 @@ else:
 
 
 env = gym.make(task)
+for i_ep in range(20):
+    # observation = torch.from_numpy(env.reset()).float()
+    observation = env.reset()
+    for t in range(env.spec.timestep_limit):
+        env.render()
+        action = model(torch.from_numpy(observation).float())
+
+        observation, reward, done, info = env.step(action)
+        if done:
+            print(f'Episode finished after {t} timesteps')
+            break
