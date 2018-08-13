@@ -20,8 +20,6 @@ except FileNotFoundError:
     sys.exit(f'File {expert_path} does not exist')
 
 
-print('\n'.join([f'{k}_shape = {v.shape}' for k, v in expert_pol.items()]))
-
 observations = torch.from_numpy(expert_pol['observations']).float()
 actions = torch.from_numpy(expert_pol['actions'][:, 0, :]).float()
 
