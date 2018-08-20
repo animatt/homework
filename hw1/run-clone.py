@@ -22,7 +22,7 @@ num_trials = 2
 per_rollout = env.spec.timestep_limit
 
 
-for i_trial in range(num_trials):
+for i_trial in range(1, num_trials + 1):
     model = MyModel(D_in, H, D_out)
 
     current_size = i_trial * per_rollout
