@@ -8,7 +8,7 @@ from behavioral_cloning import load, train
 from my_model import MyModel
 
 
-tasks = sys.argv[1]  # ie: Ant-v2
+task = sys.argv[1]  # ie: Ant-v2
 
 observations, actions = load(task)
 
@@ -18,7 +18,7 @@ H = 100
 
 
 env = gym.make(task)
-num_trials = 5
+num_trials = 2
 per_rollout = env.spec.timestep_limit
 
 
