@@ -25,14 +25,15 @@ def load(task):
         return (obs, act)
 
 
-def train(model, observations, actions, learning_rate=1e-2):
+def train(model, observations, actions, learning_rate=1e-2, verbose=False):
     loss_fn = torch.nn.MSELoss(reduction='sum')
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     for t in range(700):
         actions_pred = model(observations)
 
         loss = loss_fn(actions_pred, actions)
-        print(t, loss.item())
+        if verbose:
+            print(t, loss.item())
 
         optimizer.zero_grad()
         loss.backward()
