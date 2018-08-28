@@ -22,13 +22,19 @@ H = 100
 env = gym.make(task)
 num_trials = 2
 per_rollout = env.spec.timestep_limit
-rw_mean, rw_var = 0, 0
+experimental_results = []
+
+
+for i in range(num_trials):
+    experimental_results.append([])
+
 
 for i_trial in range(1, num_trials + 1):
     model = MyModel(D_in, H, D_out)
 
+    rw_mean, rw_var = 0, 0
     current_size = i_trial * per_rollout
-    train(model, observations[:current_size], actions[:current_size], verbose=True)
+    train(model, observations[:current_size], actions[:current_size])
 
     for i_ep in range(num_eps):
         observation = env.reset()
@@ -47,3 +53,9 @@ for i_trial in range(1, num_trials + 1):
             if done:
                 print(f'Episode finished after {t} timesteps')
                 break
+
+    experimental_results[i_trial - 1].append((rw_mean, rw_var))
+
+
+with open(f'./clones/{task}.results.pkl', 'wb') as f:
+    pickle.dump(experimental_results, f)
