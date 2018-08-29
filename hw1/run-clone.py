@@ -22,12 +22,7 @@ H = 100
 env = gym.make(task)
 num_trials = 2
 per_rollout = env.spec.timestep_limit
-experimental_results = []
-
-
-for i in range(num_trials):
-    experimental_results.append([])
-
+experimental_results = {}
 
 for i_trial in range(1, num_trials + 1):
     model = MyModel(D_in, H, D_out)
@@ -54,7 +49,9 @@ for i_trial in range(1, num_trials + 1):
                 print(f'Episode finished after {t} timesteps')
                 break
 
-    experimental_results[i_trial - 1].append((rw_mean, rw_var))
+
+    outcome = {'rw_mean': rw_mean.item(), 'rw_var': rw_var.item()}
+    experimental_results[f'trial_{i_trial}'] = outcome
 
 
 with open(f'./clones/{task}.results.pkl', 'wb') as f:
