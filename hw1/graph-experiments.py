@@ -17,7 +17,7 @@ for task in sys.argv[1:]:
         sys.exit(f"Couldn't find data for {task}.")
 
 
-rows = [task for task in sys.argv[1:]]
+rows = sys.argv[1:]   # [task for task in sys.argv[1:]]
 cols = [trial for trial in experiments[0].keys()]
 txt = [
     [
