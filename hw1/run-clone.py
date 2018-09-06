@@ -20,11 +20,11 @@ H = 100
 
 
 env = gym.make(task)
-num_trials = 2
+num_rollouts = 5
 per_rollout = env.spec.timestep_limit
 experimental_results = {}
 
-for i_trial in range(1, num_trials + 1):
+for i_trial in range(1, num_rollouts + 1):
     model = MyModel(D_in, H, D_out)
 
     rw_mean, rw_var = 0, 0
