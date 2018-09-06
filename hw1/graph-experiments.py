@@ -28,8 +28,6 @@ sys.exit({'experiments': experiments, 'experts': experts})
 rows = sys.argv[1:]
 cols = ['expert performance', 'clone performance']
 
-txt = 
-
 ax = plt.subplot(111)
 ax.table(cellText=txt, rowLabels=rows, colLabels=cols, loc='center right')
 
