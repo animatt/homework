@@ -69,8 +69,14 @@ def main():
         expert_data = {'observations': np.array(observations),
                        'actions': np.array(actions)}
 
+        experimental_results = {'rw_mean': np.mean(returns),
+                                'rw_var': np.var(returns)}
+
         with open(f'./rollouts/{args.envname}.pkl', 'wb') as f:
             pickle.dump(expert_data, f)
+
+        with open(f'./rollouts/{args.envname}.results.pkl', 'wb') as f:
+            pickle.dump(experimental_results, f)
 
 
 if __name__ == '__main__':
