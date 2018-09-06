@@ -23,10 +23,17 @@ for task in sys.argv[1:]:
         sys.exit(f"Couldn't find expert data for {task}.")
 
 
-sys.exit({'experiments': experiments, 'experts': experts})
+# sys.exit({'experiments': experiments, 'experts': experts})
 
-rows = sys.argv[1:]
-cols = ['expert performance', 'clone performance']
+rows = ['expert performance', 'clone performance']
+cols = sys.argv[1:]
+
+txt = [[
+    f'{expert["rw_mean"]:.4f} / {expert["rw_var"]:.4f}',
+    f'{clone["rw_mean"]:.4f} / {clone["rw_var"]:.4f}'
+] for clone, expert in zip(experiments, experts)]
+
+txt = list(zip(*txt))
 
 ax = plt.subplot(111)
 ax.table(cellText=txt, rowLabels=rows, colLabels=cols, loc='center right')
