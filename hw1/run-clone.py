@@ -2,6 +2,7 @@ import sys
 import torch
 import gym
 import pickle
+import numpy as np
 import pandas as pd
 from utils import get_mean_var
 from behavioral_cloning import load, train
@@ -11,48 +12,41 @@ from my_model import MyModel
 
 task = sys.argv[1]  # ie: Ant-v2
 
-observations, actions = load(task)
-
-N, D_in = observations.shape
-_, D_out = actions.shape
-num_eps = 4
-H = 100
-
-
 env = gym.make(task)
 num_rollouts = 5
-per_rollout = env.spec.timestep_limit
-experimental_results = {}
 
-for i_trial in range(1, num_rollouts + 1):
-    model = MyModel(D_in, H, D_out)
+try:
+    with open(f'./clones/{task}.params.pkl', 'rb') as f:
+        params = pickle.load(f)
+except FileNotFoundError:
+    sys.exit(f"Couldn't find params for {task}.")
 
-    rw_mean, rw_var = 0, 0
-    current_size = i_trial * per_rollout
-    train(model, observations[:current_size], actions[:current_size])
+model = MyModel(**params)
+model.load_state_dict(torch.load(f'./clones/{task}.pt'))
 
-    for i_ep in range(num_eps):
-        observation = env.reset()
-        for t in range(per_rollout):
+returns = []
+for i_ep in range(num_rollouts):
+    observation = env.reset()
 
-            # env.render()
-            with torch.no_grad():
-                action = model(torch.from_numpy(observation).float())
-                observation, reward, done, info = env.step(action)
+    done = False
+    totalr = 0
 
-            rw_mean, rw_var = get_mean_var(reward, rw_mean, rw_var, t + 1)
+    while not done:
 
-            if t % 100 == 0:
-                print(f'reward = {reward}')
-                print(f'rw_mean = {rw_mean}\nrw_var = {rw_var}\n')
-            if done:
-                print(f'Episode finished after {t} timesteps')
-                break
+        # env.render()
+        with torch.no_grad():
+            action = model(torch.from_numpy(observation).float())
+            observation, reward, done, info = env.step(action)
+
+        totalr += reward
+
+    returns.append(totalr)
 
 
-    outcome = {'rw_mean': rw_mean.item(), 'rw_var': rw_var.item()}
-    experimental_results[f'trial_{i_trial}'] = outcome
-
+experimental_results = {
+    'rw_mean': np.mean(returns),
+    'rw_var': np.var(returns)
+}
 
 with open(f'./clones/{task}.results.pkl', 'wb') as f:
     pickle.dump(experimental_results, f)

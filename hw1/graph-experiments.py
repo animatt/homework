@@ -5,7 +5,7 @@ import pickle
 import sys
 
 
-experiments = []
+experiments, experts = [], []
 if len(sys.argv) == 1:
     sys.exit('No arguments passed.')
 
@@ -14,19 +14,18 @@ for task in sys.argv[1:]:
         with open(f'./clones/{task}.results.pkl', 'rb') as f:
             experiments.append(pickle.load(f))
     except FileNotFoundError:
-        sys.exit(f"Couldn't find data for {task}.")
+        sys.exit(f"Couldn't find experimental data for {task}.")
+
+    try:
+        with open(f'./rollouts/{task}.results.pkl', 'rb') as f:
+            experts.append(pickle.load(f))
+    except FileNotFoundError:
+        sys.exit(f"Couldn't find expert data for {task}.")
 
 
-rows = sys.argv[1:]   # [task for task in sys.argv[1:]]
-cols = [trial for trial in experiments[0].keys()]
-txt = [
-    [
-        f'{task[key]["rw_mean"]:.4f} /  {task[key]["rw_var"]:.4f}'
-        for key in sorted(task)
-    ] for task in experiments
-]
+sys.exit({'experiments': experiments, 'experts': experts})
 
-print(txt)
+rows = sys.argv[1:]
 
 ax = plt.subplot(111)
 ax.table(cellText=txt, rowLabels=rows, colLabels=cols, loc='center right')
