@@ -12,7 +12,7 @@ if len(sys.argv) == 1:
 for task in sys.argv[1:]:
     try:
         with open(f'./clones/{task}.results.pkl', 'rb') as f:
-            experiments.append(pickle.load(f))
+            experiments.append(pickle.load(f)[0])
     except FileNotFoundError:
         sys.exit(f"Couldn't find experimental data for {task}.")
 
@@ -22,8 +22,6 @@ for task in sys.argv[1:]:
     except FileNotFoundError:
         sys.exit(f"Couldn't find expert data for {task}.")
 
-
-# sys.exit({'experiments': experiments, 'experts': experts})
 
 rows = ['expert performance', 'clone performance']
 cols = sys.argv[1:]
