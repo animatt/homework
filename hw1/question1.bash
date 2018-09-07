@@ -13,4 +13,4 @@ do
     python run-clone.py $e
 done
 
-python graph-experiments.py ${environments[*]}
+python create-table.py ${environments[*]}
