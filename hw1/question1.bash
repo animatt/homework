@@ -14,3 +14,10 @@ do
 done
 
 python create-table.py ${environments[*]}
+
+for e in environments
+do
+    python hyper_parameter_search.py $e
+done
+
+python create-graph.py ${environments[*]}
