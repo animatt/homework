@@ -31,7 +31,9 @@ policy_fn = load_policy.load_policy(f'./experts/{task}.pkl')
 
 NUM_EPS = 5
 NUM_TRIALS = 5
-rewards = []
+
+rw_mean = []
+rw_std = []
 
 with tf.Session():
 
@@ -48,7 +50,7 @@ with tf.Session():
         rw_per_ep = []
         new_observations = []
     
-        for ep_i in range(NUM_EPS):  # generate rollout
+        for ep_i in range(NUM_EPS):  # generate rollout clone
             obs = env.reset()
             done = False
             totalr = 0
@@ -64,7 +66,8 @@ with tf.Session():
     
             rw_per_ep.append(totalr)
 
-        rewards.append(np.mean(rw_per_ep))
+        rw_mean.append(np.mean(rw_per_ep))
+        rw_std.append(np.std(rw_per_ep))
 
         expert_data = [
             (obs, policy_fn(obs[None, :])) for obs in new_observations
@@ -83,4 +86,6 @@ with tf.Session():
 
         print(f'Completed pass #{i_trial}')
 
-print(rewards)
+
+with open(f'./clones/{task}.dagger.pkl', 'wb') as f:
+    pickle.dump({'rw_mean': rw_mean, 'rw_std': rw_std}, f)
