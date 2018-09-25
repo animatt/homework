@@ -1,5 +1,4 @@
 import numpy as np
-import tensorflow as tf
 import gym
 import logz
 import scipy.signal
@@ -7,10 +6,32 @@ import os
 import time
 import inspect
 from multiprocessing import Process
+import torch
 
 #============================================================================================#
 # Utilities
 #============================================================================================#
+class Model(torch.nn.Module):
+    def __init__(self, D_in, H_size, D_out, num_layers, output_activation):
+        super().__init__()
+
+        Lin = torch.nn.Linear
+
+        self.hidden = [Lin(D_in, H_size)]
+        self.hidden += [Lin(H_size, H_size) for _ in range(num_layers)]
+
+        self.output = output_activation
+
+    def forward(self, x):
+        out = x
+
+        for hidden_layer in self.hidden:
+            out = hidden_layer(out).clamp(min=0)
+
+        out = self.output(out)
+
+        return out
+
 
 def build_mlp(
         input_placeholder, 
@@ -18,7 +39,7 @@ def build_mlp(
         scope, 
         n_layers=2, 
         size=64, 
-        activation=tf.tanh,
+        activation=torch.nn.Tanh,
         output_activation=None
         ):
     #========================================================================================#
@@ -37,9 +58,16 @@ def build_mlp(
         # YOUR_CODE_HERE
         pass
 
+    # assuming input_placeholder gives input size
+    model = Model(
+        input_placeholder, size, output_size, n_layers, output_activation
+    )
+
+    return model
+
+
 def pathlength(path):
     return len(path["reward"])
-
 
 
 #============================================================================================#
