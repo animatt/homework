@@ -110,6 +110,7 @@ def train_PG(exp_name='',
 
     # Set random seeds
     tf.set_random_seed(seed)
+    torch.manual_seed(seed)
     np.random.seed(seed)
 
     # Make the gym environment
