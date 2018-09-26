@@ -38,12 +38,11 @@ class Model(torch.nn.Module):
 
 
 def build_mlp(
-        input_placeholder, 
+        input_size,
+        hidden_size=64,
         output_size,
-        scope, 
-        n_layers=2, 
-        size=64, 
-        activation=torch.nn.Tanh,
+        n_layers=2,
+        hidden_activation=torch.nn.Tanh,
         output_activation=None
         ):
     #========================================================================================#
@@ -62,10 +61,9 @@ def build_mlp(
         # YOUR_CODE_HERE
         pass
 
-    # assuming input_placeholder gives input size
     model = Model(
-        input_placeholder, size, output_size,
-        n_layers, activation, output_activation
+        input_size, hidden_size, output_size,
+        n_layers, hidden_activation, output_activation
     )
 
     return model
@@ -159,7 +157,6 @@ def train_PG(exp_name='',
     # Define a placeholder for advantages
     sy_adv_n = TODO
 
-
     #========================================================================================#
     #                           ----------SECTION 4----------
     # Networks
@@ -201,12 +198,15 @@ def train_PG(exp_name='',
 
     if discrete:
         # YOUR_CODE_HERE
+        model = build_mlp(None, , )
+
         sy_logits_na = TODO
         sy_sampled_ac = TODO # Hint: Use the tf.multinomial op
         sy_logprob_n = TODO
 
     else:
         # YOUR_CODE_HERE
+        model = build_mlp()
         sy_mean = TODO
         sy_logstd = TODO # logstd should just be a trainable variable, not a network output.
         sy_sampled_ac = TODO
