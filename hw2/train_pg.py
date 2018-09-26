@@ -22,7 +22,8 @@ class Model(torch.nn.Module):
         Lin = torch.nn.Linear
 
         self.hidden = [Lin(D_in, H_size)]
-        self.hidden += [Lin(H_size, H_size) for _ in range(num_layers)]
+        self.hidden += [Lin(H_size, H_size) for _ in range(num_layers - 1)]
+        self.hidden += [Lin(H_size, D_out)]
 
         self.hidden_activation = hidden_activation
         self.output_activation = output_activation
@@ -201,8 +202,8 @@ def train_PG(exp_name='',
     if discrete:
         # YOUR_CODE_HERE
         model = build_mlp(
-            input_size=ob_dim, hidden_size=64, output_size=None,
-            n_layers=2, hidden_activation=torch.nn.Tanh,
+            input_size=ob_dim, hidden_size=size, output_size=ac_dim,
+            n_layers=n_layers, hidden_activation=torch.nn.Tanh,
             output_activation=torch.nn.Sigmoid
         )
 
