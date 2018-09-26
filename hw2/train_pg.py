@@ -12,13 +12,17 @@ import torch
 # Utilities
 #============================================================================================#
 class Model(torch.nn.Module):
-    def __init__(self, D_in, H_size, D_out, num_layers, output_activation):
+    def __init__(
+            self, D_in, H_size, D_out,
+            num_layers, hidden_activation,
+            output_activation
+    ):
         super().__init__()
 
-        Lin = torch.nn.Linear
+        Act = hidden_activation
 
-        self.hidden = [Lin(D_in, H_size)]
-        self.hidden += [Lin(H_size, H_size) for _ in range(num_layers)]
+        self.hidden = [Act(D_in, H_size)]
+        self.hidden += [Act(H_size, H_size) for _ in range(num_layers)]
 
         self.output = output_activation
 
@@ -60,7 +64,8 @@ def build_mlp(
 
     # assuming input_placeholder gives input size
     model = Model(
-        input_placeholder, size, output_size, n_layers, output_activation
+        input_placeholder, size, output_size,
+        n_layers, activation, output_activation
     )
 
     return model
