@@ -19,20 +19,22 @@ class Model(torch.nn.Module):
     ):
         super().__init__()
 
-        Act = hidden_activation
+        Lin = torch.nn.Linear
 
-        self.hidden = [Act(D_in, H_size)]
-        self.hidden += [Act(H_size, H_size) for _ in range(num_layers)]
+        self.hidden = [Lin(D_in, H_size)]
+        self.hidden += [Lin(H_size, H_size) for _ in range(num_layers)]
 
-        self.output = output_activation
+        self.hidden_activation = hidden_activation
+        self.output_activation = output_activation
 
     def forward(self, x):
         out = x
 
         for hidden_layer in self.hidden:
-            out = hidden_layer(out).clamp(min=0)
+            lin = hidden_layer(out)
+            out = self.hidden_activation(lin)
 
-        out = self.output(out)
+        out = self.output_activation(out)
 
         return out
 
@@ -40,7 +42,7 @@ class Model(torch.nn.Module):
 def build_mlp(
         input_size,
         hidden_size=64,
-        output_size,
+        output_size=None,
         n_layers=2,
         hidden_activation=torch.nn.Tanh,
         output_activation=None
@@ -198,7 +200,11 @@ def train_PG(exp_name='',
 
     if discrete:
         # YOUR_CODE_HERE
-        model = build_mlp(None, , )
+        model = build_mlp(
+            input_size=ob_dim, hidden_size=64, output_size=None,
+            n_layers=2, hidden_activation=torch.nn.Tanh,
+            output_activation=torch.nn.Sigmoid
+        )
 
         sy_logits_na = TODO
         sy_sampled_ac = TODO # Hint: Use the tf.multinomial op
